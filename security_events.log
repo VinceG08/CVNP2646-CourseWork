@@ -1,0 +1,8 @@
+INFO: System startup completed
+WARNING: Failed login attempt from 203.0.113.45
+INFO: Database connection established
+ERROR: Unauthorized access attempt on /admin
+WARNING: Multiple failed authentication attempts
+INFO: Backup completed successfully
+CRITICAL: Malware signature detected in uploaded file
+WARNING: Unusual network traffic pattern detected
