@@ -1,16 +1,50 @@
 {
   "metadata": {
-    "generated_at": "2026-02-17T17:16:25",
+    "generated_at": "2026-02-17T17:22:21",
     "analyst": "Vincent Gatlin",
     "classification": "INTERNAL"
   },
   "summary": {
-    "total_events": 0,
-    "total_success": 0,
-    "total_fail": 0,
-    "failure_rate": 0.0,
-    "parse_errors": 0
+    "total_events": 18,
+    "total_success": 4,
+    "total_fail": 14,
+    "failure_rate": 77.8,
+    "parse_errors": 2
   },
-  "top_targeted_users": [],
-  "top_attacking_ips": []
+  "top_targeted_users": [
+    {
+      "username": "admin",
+      "failed_attempts": 9
+    },
+    {
+      "username": "root",
+      "failed_attempts": 3
+    },
+    {
+      "username": "administrator",
+      "failed_attempts": 1
+    },
+    {
+      "username": "test",
+      "failed_attempts": 1
+    }
+  ],
+  "top_attacking_ips": [
+    {
+      "ip_address": "198.51.100.45",
+      "failed_attempts": 9
+    },
+    {
+      "ip_address": "203.0.113.89",
+      "failed_attempts": 2
+    },
+    {
+      "ip_address": "192.0.2.15",
+      "failed_attempts": 2
+    },
+    {
+      "ip_address": "198.51.100.92",
+      "failed_attempts": 1
+    }
+  ]
 }
