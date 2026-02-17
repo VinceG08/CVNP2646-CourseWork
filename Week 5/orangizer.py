@@ -193,6 +193,6 @@ def main():
 
     print("Organization complete!")
     print(f"Processed {stats['total_files']} files.")
-
+    
 if __name__ == "__main__":
     main()
