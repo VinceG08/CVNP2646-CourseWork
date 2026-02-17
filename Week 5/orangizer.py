@@ -176,7 +176,10 @@ def main():
     Program entry point.
     Accepts directory path as a command-line argument.
     """
-    source_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("downloads")
+    if len(sys.argv) > 1:
+        source_dir = Path(sys.argv[1])
+    else:
+        source_dir = Path.home() / "Downloads"
 
     print(f"Organizing files in: {source_dir}")
 
@@ -190,7 +193,6 @@ def main():
 
     print("Organization complete!")
     print(f"Processed {stats['total_files']} files.")
-
 
 if __name__ == "__main__":
     main()
