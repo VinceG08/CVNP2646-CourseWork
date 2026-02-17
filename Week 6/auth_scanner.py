@@ -7,8 +7,7 @@ Analyzes authentication logs for security incidents
 import sys
 import json
 from collections import Counter
-from datetime import datetime
-
+from datetime import datetime, timezone
 
 def parse_log_line(line):
     """
@@ -107,7 +106,7 @@ def generate_json_report(results):
     """
     report = {
         "metadata": {
-            "generated_at": datetime.utcnow().isoformat() + "Z",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "analyst": "SOC Analyst",
         },
         "summary": {
@@ -170,6 +169,9 @@ def main():
     print(f"Processing: {logfile}")
 
     results = analyze_logs(logfile)
+
+    if results["total_events"] == 0 and results["parse_errors"] == 0:
+        print("⚠ No data found in log file.")
 
     total_lines = results["total_events"] + results["parse_errors"]
     success_rate = (
