@@ -27,7 +27,7 @@ import sys
 # -----------------------------
 CATEGORIES = {
     "documents": ["pdf", "doc", "docx", "txt", "rtf", "odt"],
-    "images": ["jpg", "jpeg", "png", "gif", "bmp", "svg"],
+    "images": ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"],
     "archives": ["zip", "tar", "gz", "rar", "7z"],
     "executables": ["exe", "msi", "bat", "sh"],
     "videos": ["mp4", "avi", "mkv", "mov"],
@@ -193,6 +193,6 @@ def main():
 
     print("Organization complete!")
     print(f"Processed {stats['total_files']} files.")
-    
+
 if __name__ == "__main__":
     main()
