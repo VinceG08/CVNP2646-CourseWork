@@ -1,12 +1,13 @@
 {
   "metadata": {
-    "generated_at": "2026-02-17T17:07:57.494787+00:00",
-    "analyst": "SOC Analyst"
+    "generated_at": "2026-02-17T17:16:25",
+    "analyst": "Vincent Gatlin",
+    "classification": "INTERNAL"
   },
   "summary": {
     "total_events": 0,
-    "successful_logins": 0,
-    "failed_logins": 0,
+    "total_success": 0,
+    "total_fail": 0,
     "failure_rate": 0.0,
     "parse_errors": 0
   },
