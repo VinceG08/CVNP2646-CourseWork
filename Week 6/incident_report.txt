@@ -1,0 +1,11 @@
+Authentication Log Analysis Report
+======================================================================
+Total Events Processed: 0
+Successful Logins: 0
+Failed Logins: 0
+Failure Rate: 0.0%
+Parse Errors: 0
+
+Top Targeted Users:
+
+Top Attacking IP Addresses:

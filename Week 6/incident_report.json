@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "generated_at": "2026-02-17T16:56:55.178052Z",
+    "analyst": "SOC Analyst"
+  },
+  "summary": {
+    "total_events": 0,
+    "successful_logins": 0,
+    "failed_logins": 0,
+    "failure_rate": 0.0,
+    "parse_errors": 0
+  },
+  "top_targeted_users": [],
+  "top_attacking_ips": []
+}
