@@ -1,0 +1,31 @@
+{
+  "plan_name": "Code Repository Backup",
+  "version": "1.5",
+  "created_by": "devops_team",
+  "description": "Backup of source code repositories",
+  "sources": [
+    {
+      "name": "Frontend Repo",
+      "path": "/repos/frontend",
+      "recursive": true,
+      "include_patterns": ["*.js", "*.css", "*.html"],
+      "exclude_patterns": ["node_modules", "dist"]
+    },
+    {
+      "name": "Backend Repo",
+      "path": "/repos/backend",
+      "recursive": true,
+      "include_patterns": ["*.py", "*.yml"],
+      "exclude_patterns": ["venv", "__pycache__"]
+    }
+  ],
+  "destination": {
+    "base_path": "/backup/code_repos",
+    "create_timestamped_folders": true,
+    "retention_days": 30
+  },
+  "options": {
+    "verify_backups": false,
+    "max_file_size_mb": 50
+  }
+}

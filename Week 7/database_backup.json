@@ -1,0 +1,31 @@
+{
+  "plan_name": "Database Backup Weekly",
+  "version": "2.3",
+  "created_by": "db_admin",
+  "description": "Weekly backup of production databases",
+  "sources": [
+    {
+      "name": "MySQL Dump",
+      "path": "/var/backups/mysql",
+      "recursive": false,
+      "include_patterns": ["*.sql"],
+      "exclude_patterns": ["old_*.sql"]
+    },
+    {
+      "name": "PostgreSQL Dump",
+      "path": "/var/backups/postgres",
+      "recursive": false,
+      "include_patterns": ["*.dump"],
+      "exclude_patterns": []
+    }
+  ],
+  "destination": {
+    "base_path": "/backup/databases",
+    "create_timestamped_folders": true,
+    "retention_days": 180
+  },
+  "options": {
+    "verify_backups": true,
+    "max_file_size_mb": 500
+  }
+}
