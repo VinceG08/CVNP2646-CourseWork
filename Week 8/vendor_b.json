@@ -1,0 +1,9 @@
+{
+  "indicators": [
+    {"ioc_id": "VB-001", "indicator_type": "ip", "indicator_value": "203.0.113.10", "score": 92, "severity": "critical", "date": "2026-01-01"},
+    {"ioc_id": "VB-002", "indicator_type": "domain", "indicator_value": "malware-example.net", "score": 85, "severity": "high", "date": "2026-01-06"},
+    {"ioc_id": "VB-003", "indicator_type": "hash", "indicator_value": "abcd1234ef567890", "score": 75, "severity": "medium", "date": "2026-01-07"},
+    {"ioc_id": "VB-004", "indicator_type": "domain", "indicator_value": "phishing-site.org", "score": 80, "severity": "high", "date": "2026-01-08"},
+    {"ioc_id": "VB-005", "indicator_type": "ip", "indicator_value": "198.51.100.23", "score": 65, "severity": "low", "date": "2026-01-09"}
+  ]
+}
