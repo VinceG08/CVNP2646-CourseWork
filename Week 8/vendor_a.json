@@ -1,0 +1,9 @@
+{
+  "indicators": [
+    {"id": "VA-001", "type": "ip", "value": "203.0.113.10", "confidence": 95, "threat": "critical", "first_seen": "2026-01-01"},
+    {"id": "VA-002", "type": "domain", "value": "malicious-site.com", "confidence": 90, "threat": "high", "first_seen": "2026-01-02"},
+    {"id": "VA-003", "type": "domain", "value": "phishing-site.org", "confidence": 88, "threat": "high", "first_seen": "2026-01-03"},
+    {"id": "VA-004", "type": "hash", "value": "abcd1234ef567890", "confidence": 70, "threat": "medium", "first_seen": "2026-01-04"},
+    {"id": "VA-005", "type": "url", "value": "http://malware.download/evil.exe", "confidence": 60, "threat": "low", "first_seen": "2026-01-05"}
+  ]
+}

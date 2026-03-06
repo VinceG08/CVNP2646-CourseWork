@@ -1,0 +1,9 @@
+{
+  "indicators": [
+    {"category": "ip", "ioc": "192.0.2.45", "reliability": 90, "risk": "high", "date": "2026-01-10"},
+    {"category": "domain", "ioc": "malicious-site.com", "reliability": 80, "risk": "critical", "date": "2026-01-11"},
+    {"category": "url", "ioc": "http://evil.download/malware.exe", "reliability": 70, "risk": "medium", "date": "2026-01-12"},
+    {"category": "hash", "ioc": "1234abcd5678ef90", "reliability": 85, "risk": "high", "date": "2026-01-13"},
+    {"category": "ip", "ioc": "198.51.100.23", "reliability": 60, "risk": "low", "date": "2026-01-14"}
+  ]
+}
