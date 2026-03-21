@@ -1,0 +1,15 @@
+Key Finding
+
+The environment is well-maintained with most systems patched within 30 days. Only one system (EXEC-WKS-002) exceeds the acceptable patch window and requires immediate remediation.
+
+Risk Scoring Model
+Criticality: up to 40 pts
+Patch age: up to 30 pts
+Environment: up to 15 pts
+Tags (PCI/HIPAA): 10 pts each
+Internet-facing: 15 pts
+Max score capped at 100
+CIS Alignment
+Critical (≥70): Patch within 48 hours
+High (50–69): Patch within 7 days
+Medium (25–49): Patch within 30 days
