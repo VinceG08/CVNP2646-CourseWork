@@ -31,7 +31,6 @@ def check_disabled_with_roles():
     for user_id, user in users_dict.items():
         if user['status'] == 'disabled' and user_id in users_with_roles:
             roles = [r['role'] for r in roles_by_user[user_id]]
-
             violations.append({
                 'user_id': user_id,
                 'username': user['username'],
@@ -109,7 +108,6 @@ def check_conflicting_roles():
 
     for user_id, roles in roles_by_user.items():
         roles_lower = {r['role'].lower() for r in roles}
-
         if any('admin' in r for r in roles_lower) and any('audit' in r for r in roles_lower):
             violations.append({
                 'user_id': user_id,
@@ -122,29 +120,10 @@ def check_conflicting_roles():
     return violations
 
 # ----------------------
-# AI RULE 2: Orphaned Roles
-# ----------------------
-def check_orphaned_roles():
-    violations = []
-
-    for r in roles_data:
-        if r['user_id'] not in users_dict:
-            violations.append({
-                'user_id': r['user_id'],
-                'username': 'UNKNOWN',
-                'violation_type': 'orphaned_role',
-                'severity': 'HIGH',
-                'details': f"Role {r['role']} has no matching user"
-            })
-
-    return violations
-
-# ----------------------
-# AI RULE 3: Excessive Permissions
+# AI RULE 3: Excessive Roles
 # ----------------------
 def check_excessive_roles(threshold=3):
     violations = []
-
     for user_id, roles in roles_by_user.items():
         if len(roles) > threshold:
             violations.append({
@@ -154,72 +133,64 @@ def check_excessive_roles(threshold=3):
                 'severity': 'LOW',
                 'details': f"{len(roles)} roles assigned"
             })
-
     return violations
 
 # ----------------------
 # REPORTING
 # ----------------------
-from datetime import datetime
-
 def generate_text_report(violations):
-    # Count violations by severity
-    severity_order = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+    severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
+    violations.sort(key=lambda v: severity_order[v['severity']])
+
+    # Summary counts
     severity_counts = {sev: 0 for sev in severity_order}
+    for v in violations:
+        severity_counts[v['severity']] += 1
+
+    print("="*70)
+    print("AUDIT REPORT")
+    print("="*70)
+    print(f"Generated: {datetime.now()}\n")
+
+    print("VIOLATIONS SUMMARY BY SEVERITY")
+    for sev in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
+        bar = "█" * severity_counts[sev]
+        print(f"{sev:10s} [{severity_counts[sev]:3d}] {bar}")
+    print("\nDETAILED VIOLATIONS\n")
 
     for v in violations:
-        sev = v.get('severity', 'LOW').upper()
-        if sev in severity_counts:
-            severity_counts[sev] += 1
+        print(f"{v['user_id']} ({v['username']})")
+        print(f"  Type: {v['violation_type']}")
+        print(f"  Severity: {v['severity']}")
+        print(f"  Details: {v['details']}\n")
 
-    # Start building the report
-    lines = []
-    lines.append("=" * 70)
-    lines.append("USER ACCOUNT & PERMISSIONS AUDIT REPORT")
-    lines.append("=" * 70)
-    lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-
-    # Executive summary
-    lines.append("EXECUTIVE SUMMARY")
-    lines.append("-" * 70)
-    lines.append(f"Total Violations Found: {len(violations)}")
-    lines.append("Violations by Severity:")
-    for sev in severity_order:
-        count = severity_counts[sev]
-        bar = "█" * count
-        lines.append(f"{sev:10s} [{count:3d}] {bar}")
-    lines.append("")
-
-    # Detailed violations grouped by severity
-    lines.append("DETAILED VIOLATIONS")
-    lines.append("-" * 70)
-    for sev in severity_order:
-        sev_violations = [v for v in violations if v.get('severity','LOW').upper() == sev]
-        if sev_violations:
-            lines.append(f"\n{sev} Violations:")
-            for v in sev_violations:
-                lines.append(f"- User {v['user_id']} ({v['username']}): {v['violation_type']}")
-                lines.append(f"  Details: {v['details']}")
-    
-    # Write to file
+    # Save text report
     with open("report.txt", "w") as f:
-        f.write("\n".join(lines))
-    
-    # Print to terminal
-    print("\n".join(lines))
+        f.write("="*70 + "\n")
+        f.write("AUDIT REPORT\n")
+        f.write("="*70 + "\n")
+        f.write(f"Generated: {datetime.now()}\n\n")
+        f.write("VIOLATIONS SUMMARY BY SEVERITY\n")
+        for sev in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
+            bar = "█" * severity_counts[sev]
+            f.write(f"{sev:10s} [{severity_counts[sev]:3d}] {bar}\n")
+        f.write("\nDETAILED VIOLATIONS\n")
+        for v in violations:
+            f.write(f"{v['user_id']} ({v['username']})\n")
+            f.write(f"  Type: {v['violation_type']}\n")
+            f.write(f"  Severity: {v['severity']}\n")
+            f.write(f"  Details: {v['details']}\n\n")
 
 # ----------------------
-# RUN
+# RUN AUDIT
 # ----------------------
 all_violations = []
 all_violations += check_disabled_with_roles()
 all_violations += check_unauthorized_admin()
 all_violations += check_stale_accounts()
 all_violations += check_conflicting_roles()
-all_violations += check_orphaned_roles()
 all_violations += check_excessive_roles()
 
-generate_json_report(all_violations)
 generate_text_report(all_violations)
 
 print("Audit Complete")
