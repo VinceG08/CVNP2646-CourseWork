@@ -26,7 +26,6 @@ for r in roles_data:
 # ----------------------
 def check_disabled_with_roles():
     violations = []
-
     users_with_roles = {r['user_id'] for r in roles_data}
 
     for user_id, user in users_dict.items():
@@ -38,9 +37,8 @@ def check_disabled_with_roles():
                 'username': user['username'],
                 'violation_type': 'disabled_with_roles',
                 'severity': 'CRITICAL',
-                'details': f"Disabled user has {len(roles)} role(s): {', '.join(roles)}"
+                'details': f"Disabled user has roles: {', '.join(roles)}"
             })
-
     return violations
 
 # ----------------------
@@ -53,7 +51,6 @@ def check_unauthorized_admin():
     for r in roles_data:
         if 'admin' in r['role'].lower():
             user = users_dict.get(r['user_id'])
-
             if user and user['department'] not in allowed:
                 violations.append({
                     'user_id': user['user_id'],
@@ -62,7 +59,6 @@ def check_unauthorized_admin():
                     'severity': 'HIGH',
                     'details': f"{user['department']} user has admin role: {r['role']}"
                 })
-
     return violations
 
 # ----------------------
@@ -88,31 +84,33 @@ def check_stale_accounts(days=90):
             })
             continue
 
-        last_login = datetime.strptime(last_login_str, "%Y-%m-%d")
+        try:
+            last_login = datetime.strptime(last_login_str, "%Y-%m-%d")
+        except ValueError:
+            continue
 
         if last_login < cutoff:
             days_inactive = (datetime.now() - last_login).days
-
             violations.append({
                 'user_id': user_id,
                 'username': user['username'],
                 'violation_type': 'stale_account',
                 'severity': 'MEDIUM',
-                'details': f"No login for {days_inactive} days (last: {last_login_str})"
+                'details': f"No login for {days_inactive} days"
             })
 
     return violations
 
 # ----------------------
-# ADVANCED RULE 1: Conflicting Roles
+# AI RULE 1: Conflicting Roles
 # ----------------------
 def check_conflicting_roles():
     violations = []
 
     for user_id, roles in roles_by_user.items():
-        role_names = {r['role'] for r in roles}
+        roles_lower = {r['role'].lower() for r in roles}
 
-        if 'admin' in role_names and 'auditor' in role_names:
+        if any('admin' in r for r in roles_lower) and any('audit' in r for r in roles_lower):
             violations.append({
                 'user_id': user_id,
                 'username': users_dict[user_id]['username'],
@@ -124,7 +122,7 @@ def check_conflicting_roles():
     return violations
 
 # ----------------------
-# ADVANCED RULE 2: Orphaned Roles
+# AI RULE 2: Orphaned Roles
 # ----------------------
 def check_orphaned_roles():
     violations = []
@@ -142,9 +140,9 @@ def check_orphaned_roles():
     return violations
 
 # ----------------------
-# ADVANCED RULE 3: Excessive Permissions
+# AI RULE 3: Excessive Permissions
 # ----------------------
-def check_excessive_roles(threshold=1):
+def check_excessive_roles(threshold=3):
     violations = []
 
     for user_id, roles in roles_by_user.items():
@@ -160,25 +158,6 @@ def check_excessive_roles(threshold=1):
     return violations
 
 # ----------------------
-# RISK SCORING
-# ----------------------
-SEVERITY_WEIGHTS = {
-    'CRITICAL': 5,
-    'HIGH': 4,
-    'MEDIUM': 2,
-    'LOW': 1
-}
-
-def calculate_risk_scores(violations):
-    scores = {}
-
-    for v in violations:
-        uid = v['user_id']
-        scores[uid] = scores.get(uid, 0) + SEVERITY_WEIGHTS[v['severity']]
-
-    return scores
-
-# ----------------------
 # REPORTING
 # ----------------------
 def generate_json_report(violations):
@@ -192,41 +171,29 @@ def generate_json_report(violations):
     report = {
         'audit_metadata': {
             'timestamp': datetime.now().isoformat(),
-            'total_users': len(users_dict),
-            'total_roles': len(roles_data),
+            'total_users_audited': len(users_dict),
+            'total_role_assignments': len(roles_data),
             'total_violations': len(violations)
         },
-        'summary': {
+        'violation_summary': {
             'by_severity': severity_counts,
             'by_type': type_counts
         },
-        'violations': violations
+        'all_violations': violations
     }
 
     with open('report.json', 'w') as f:
         json.dump(report, f, indent=4)
 
-
 def generate_text_report(violations):
-    lines = []
+    severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
+    violations.sort(key=lambda v: severity_order[v['severity']])
 
+    lines = []
     lines.append("=" * 70)
-    lines.append("USER ACCOUNT & PERMISSIONS AUDIT REPORT")
+    lines.append("AUDIT REPORT")
     lines.append("=" * 70)
     lines.append(f"Generated: {datetime.now()}\n")
-
-    lines.append(f"Total Violations: {len(violations)}\n")
-
-    severity_counts = {}
-    for v in violations:
-        severity_counts[v['severity']] = severity_counts.get(v['severity'], 0) + 1
-
-    lines.append("VIOLATIONS BY SEVERITY")
-    for sev in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
-        count = severity_counts.get(sev, 0)
-        lines.append(f"{sev:10}: {count} {'█'*count}")
-
-    lines.append("\nDETAILED VIOLATIONS\n")
 
     for v in violations:
         lines.append(f"{v['user_id']} ({v['username']})")
@@ -234,14 +201,13 @@ def generate_text_report(violations):
         lines.append(f"  Severity: {v['severity']}")
         lines.append(f"  Details: {v['details']}\n")
 
-    with open("report.txt", "w", encoding="utf-8") as f:
+    with open("report.txt", "w") as f:
         f.write("\n".join(lines))
 
 # ----------------------
-# RUN AUDIT
+# RUN
 # ----------------------
 all_violations = []
-
 all_violations += check_disabled_with_roles()
 all_violations += check_unauthorized_admin()
 all_violations += check_stale_accounts()
@@ -249,11 +215,8 @@ all_violations += check_conflicting_roles()
 all_violations += check_orphaned_roles()
 all_violations += check_excessive_roles()
 
-risk_scores = calculate_risk_scores(all_violations)
-
 generate_json_report(all_violations)
 generate_text_report(all_violations)
 
 print("Audit Complete")
 print(f"Total Violations: {len(all_violations)}")
-print("Risk Scores:", risk_scores)
