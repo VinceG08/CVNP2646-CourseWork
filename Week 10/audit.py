@@ -148,9 +148,12 @@ def generate_text_report(violations):
         "LOW": 0
     }
 
-    # Count violations by severity
+    # Count violations by severity safely
     for v in violations:
-        severity_counts[v['severity']] += 1
+        sev = v.get('severity', 'LOW')  # default LOW if missing
+        if sev not in severity_counts:
+            sev = 'LOW'
+        severity_counts[sev] += 1
 
     # Print report to terminal
     print("="*70)
@@ -163,13 +166,19 @@ def generate_text_report(violations):
         print(f"{sev:10s} [{severity_counts[sev]:3d}] {bar}")
     print("\nDETAILED VIOLATIONS\n")
     for v in violations:
-        print(f"{v['user_id']} ({v['username']})")
-        print(f"  Type: {v['type']}")
-        print(f"  Severity: {v['severity']}")
-        print(f"  Details: {v['details']}\n")
+        user_id = v.get('user_id', 'UNKNOWN')
+        username = v.get('username', 'N/A')
+        vtype = v.get('type', 'N/A')
+        severity = v.get('severity', 'N/A')
+        details = v.get('details', 'N/A')
+
+        print(f"{user_id} ({username})")
+        print(f"  Type: {vtype}")
+        print(f"  Severity: {severity}")
+        print(f"  Details: {details}\n")
 
     # Save report to file safely
-    with open("report.txt", "w", encoding="utf-8") as f:  # UTF-8 encoding
+    with open("report.txt", "w", encoding="utf-8") as f:
         f.write("="*70 + "\n")
         f.write("AUDIT REPORT\n")
         f.write("="*70 + "\n")
@@ -181,10 +190,16 @@ def generate_text_report(violations):
 
         f.write("\nDETAILED VIOLATIONS\n\n")
         for v in violations:
-            f.write(f"{v['user_id']} ({v['username']})\n")
-            f.write(f"  Type: {v['type']}\n")
-            f.write(f"  Severity: {v['severity']}\n")
-            f.write(f"  Details: {v['details']}\n\n")
+            user_id = v.get('user_id', 'UNKNOWN')
+            username = v.get('username', 'N/A')
+            vtype = v.get('type', 'N/A')
+            severity = v.get('severity', 'N/A')
+            details = v.get('details', 'N/A')
+
+            f.write(f"{user_id} ({username})\n")
+            f.write(f"  Type: {vtype}\n")
+            f.write(f"  Severity: {severity}\n")
+            f.write(f"  Details: {details}\n\n")
 
 # ----------------------
 # RUN AUDIT
