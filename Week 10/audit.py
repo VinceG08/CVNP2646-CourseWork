@@ -120,7 +120,7 @@ def check_conflicting_roles():
     return violations
 
 # ----------------------
-# AI RULE 3: Excessive Roles
+# AI RULE 2: Excessive Roles
 # ----------------------
 def check_excessive_roles(threshold=3):
     violations = []
