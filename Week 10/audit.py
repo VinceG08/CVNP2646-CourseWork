@@ -160,49 +160,53 @@ def check_excessive_roles(threshold=3):
 # ----------------------
 # REPORTING
 # ----------------------
-def generate_json_report(violations):
-    severity_counts = {}
-    type_counts = {}
-
-    for v in violations:
-        severity_counts[v['severity']] = severity_counts.get(v['severity'], 0) + 1
-        type_counts[v['violation_type']] = type_counts.get(v['violation_type'], 0) + 1
-
-    report = {
-        'audit_metadata': {
-            'timestamp': datetime.now().isoformat(),
-            'total_users_audited': len(users_dict),
-            'total_role_assignments': len(roles_data),
-            'total_violations': len(violations)
-        },
-        'violation_summary': {
-            'by_severity': severity_counts,
-            'by_type': type_counts
-        },
-        'all_violations': violations
-    }
-
-    with open('report.json', 'w') as f:
-        json.dump(report, f, indent=4)
+from datetime import datetime
 
 def generate_text_report(violations):
-    severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
-    violations.sort(key=lambda v: severity_order[v['severity']])
-
-    lines = []
-    lines.append("=" * 70)
-    lines.append("AUDIT REPORT")
-    lines.append("=" * 70)
-    lines.append(f"Generated: {datetime.now()}\n")
+    # Count violations by severity
+    severity_order = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+    severity_counts = {sev: 0 for sev in severity_order}
 
     for v in violations:
-        lines.append(f"{v['user_id']} ({v['username']})")
-        lines.append(f"  Type: {v['violation_type']}")
-        lines.append(f"  Severity: {v['severity']}")
-        lines.append(f"  Details: {v['details']}\n")
+        sev = v.get('severity', 'LOW').upper()
+        if sev in severity_counts:
+            severity_counts[sev] += 1
 
+    # Start building the report
+    lines = []
+    lines.append("=" * 70)
+    lines.append("USER ACCOUNT & PERMISSIONS AUDIT REPORT")
+    lines.append("=" * 70)
+    lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+
+    # Executive summary
+    lines.append("EXECUTIVE SUMMARY")
+    lines.append("-" * 70)
+    lines.append(f"Total Violations Found: {len(violations)}")
+    lines.append("Violations by Severity:")
+    for sev in severity_order:
+        count = severity_counts[sev]
+        bar = "█" * count
+        lines.append(f"{sev:10s} [{count:3d}] {bar}")
+    lines.append("")
+
+    # Detailed violations grouped by severity
+    lines.append("DETAILED VIOLATIONS")
+    lines.append("-" * 70)
+    for sev in severity_order:
+        sev_violations = [v for v in violations if v.get('severity','LOW').upper() == sev]
+        if sev_violations:
+            lines.append(f"\n{sev} Violations:")
+            for v in sev_violations:
+                lines.append(f"- User {v['user_id']} ({v['username']}): {v['violation_type']}")
+                lines.append(f"  Details: {v['details']}")
+    
+    # Write to file
     with open("report.txt", "w") as f:
         f.write("\n".join(lines))
+    
+    # Print to terminal
+    print("\n".join(lines))
 
 # ----------------------
 # RUN
