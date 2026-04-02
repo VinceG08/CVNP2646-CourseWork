@@ -138,46 +138,51 @@ def check_excessive_roles(threshold=3):
 # ----------------------
 # REPORTING
 # ----------------------
-def generate_text_report(violations):
-    severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
-    violations.sort(key=lambda v: severity_order[v['severity']])
+from datetime import datetime
 
-    # Summary counts
-    severity_counts = {sev: 0 for sev in severity_order}
+def generate_text_report(violations):
+    severity_counts = {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0
+    }
+
+    # Count violations by severity
     for v in violations:
         severity_counts[v['severity']] += 1
 
+    # Print report to terminal
     print("="*70)
     print("AUDIT REPORT")
     print("="*70)
     print(f"Generated: {datetime.now()}\n")
-
     print("VIOLATIONS SUMMARY BY SEVERITY")
     for sev in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
-        bar = "█" * severity_counts[sev]
+        bar = "#" * severity_counts[sev]  # ASCII bars for Windows
         print(f"{sev:10s} [{severity_counts[sev]:3d}] {bar}")
     print("\nDETAILED VIOLATIONS\n")
-
     for v in violations:
         print(f"{v['user_id']} ({v['username']})")
-        print(f"  Type: {v['violation_type']}")
+        print(f"  Type: {v['type']}")
         print(f"  Severity: {v['severity']}")
         print(f"  Details: {v['details']}\n")
 
-    # Save text report
-    with open("report.txt", "w") as f:
+    # Save report to file safely
+    with open("report.txt", "w", encoding="utf-8") as f:  # UTF-8 encoding
         f.write("="*70 + "\n")
         f.write("AUDIT REPORT\n")
         f.write("="*70 + "\n")
         f.write(f"Generated: {datetime.now()}\n\n")
         f.write("VIOLATIONS SUMMARY BY SEVERITY\n")
         for sev in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
-            bar = "█" * severity_counts[sev]
+            bar = "#" * severity_counts[sev]
             f.write(f"{sev:10s} [{severity_counts[sev]:3d}] {bar}\n")
-        f.write("\nDETAILED VIOLATIONS\n")
+
+        f.write("\nDETAILED VIOLATIONS\n\n")
         for v in violations:
             f.write(f"{v['user_id']} ({v['username']})\n")
-            f.write(f"  Type: {v['violation_type']}\n")
+            f.write(f"  Type: {v['type']}\n")
             f.write(f"  Severity: {v['severity']}\n")
             f.write(f"  Details: {v['details']}\n\n")
 
