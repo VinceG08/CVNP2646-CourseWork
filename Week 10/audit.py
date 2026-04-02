@@ -234,7 +234,7 @@ def generate_text_report(violations):
         lines.append(f"  Severity: {v['severity']}")
         lines.append(f"  Details: {v['details']}\n")
 
-    with open('report.txt', 'w') as f:
+    with open("report.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
 
 # ----------------------
