@@ -185,6 +185,8 @@ def generate_json_report(violations):
     with open('report.json', 'w') as f:
         json.dump(report, f, indent=4)
 
+    return json.dumps(report, indent=2)
+
 def generate_text_report(violations):
     severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
     violations.sort(key=lambda v: severity_order[v['severity']])
@@ -201,8 +203,12 @@ def generate_text_report(violations):
         lines.append(f"  Severity: {v['severity']}")
         lines.append(f"  Details: {v['details']}\n")
 
+    report_text = "\n".join(lines)
+
     with open("report.txt", "w") as f:
-        f.write("\n".join(lines))
+        f.write(report_text)
+
+    return report_text 
 
 # ----------------------
 # RUN
@@ -215,8 +221,14 @@ all_violations += check_conflicting_roles()
 all_violations += check_orphaned_roles()
 all_violations += check_excessive_roles()
 
-generate_json_report(all_violations)
-generate_text_report(all_violations)
+json_report = generate_json_report(all_violations)
+text_report = generate_text_report(all_violations)
 
-print("Audit Complete")
+print("\n===== TEXT REPORT =====\n")
+print(text_report)
+
+print("\n===== JSON REPORT =====\n")
+print(json_report)
+
+print("\nAudit Complete")
 print(f"Total Violations: {len(all_violations)}")
