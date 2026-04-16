@@ -7,13 +7,13 @@ A Python tool that analyzes network logs to detect port scans and SYN flood atta
 ## Usage
 
 ```bash
-python network_monitor.py sample.log
+python network_monitor.py traffic_sample.log
 ```
 
 Optional:
 
 ```bash
-python network_monitor.py sample.log -o results.json -p 30 -s 120
+python network_monitor.py traffic_sample.log -o results.json -p 30 -s 120
 ```
 
 ---
@@ -33,7 +33,7 @@ python network_monitor.py sample.log -o results.json -p 30 -s 120
 ```
 network_monitor.py
 test_network_monitor.py
-sample.log
+traffic_sample.log
 README.md
 ```
 
@@ -47,11 +47,3 @@ README.md
 * Separated file I/O from logic
 * Added error handling
 * Added tests
-
----
-
-## Testing
-
-```bash
-pytest -v
-```
