@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "timestamp": "2024-03-10T02:30:00Z",
+      "username": "admin",
+      "source_ip": "185.220.101.45",
+      "event_type": "login_success"
+    },
+    {
+      "timestamp": "2024-03-10T14:20:00Z",
+      "username": "admin",
+      "source_ip": "192.168.1.10",
+      "event_type": "login_failed"
+    },
+    {
+      "timestamp": "2024-03-10T14:20:30Z",
+      "username": "admin",
+      "source_ip": "192.168.1.10",
+      "event_type": "login_failed"
+    },
+    {
+      "timestamp": "2024-03-10T14:21:00Z",
+      "username": "admin",
+      "source_ip": "192.168.1.10",
+      "event_type": "login_success"
+    }
+  ]
+}
