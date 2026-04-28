@@ -1,24 +1,24 @@
-# 🔐 Authentication Log Threat Analyzer
+🔐 Authentication Log Threat Analyzer
 
-## 📌 Overview
+📌 Overview
 
 The Authentication Log Threat Analyzer is a Python command-line tool that analyzes authentication logs to detect suspicious login behavior. It identifies brute-force attacks, anomalous login times, and logins from known malicious IP addresses, then assigns risk scores and generates structured JSON reports.
 
 This project simulates core functionality of a simplified SIEM (Security Information and Event Management) system.
 
----
 
-## 🚨 Problem Statement
+
+🚨 Problem Statement
 
 Security teams handle large volumes of authentication logs daily. Manually reviewing these logs is time-consuming and can lead to missed threats such as brute-force attacks or unauthorized access.
 
 This tool automates log analysis, detects suspicious patterns, and prioritizes high-risk events for investigation.
 
----
 
-## ⚙️ Features
 
-### ✅ Core Features
+⚙️ Features
+
+✅ Core Features
 
 * Parse authentication logs from JSON
 * Detect brute-force attacks (multiple failed logins → success)
@@ -29,9 +29,9 @@ This tool automates log analysis, detects suspicious patterns, and prioritizes h
 * CLI interface using argparse
 * Logging and error handling
 
----
 
-## 📁 Project Structure
+
+📁 Project Structure
 
 ```
 CapStone/
@@ -56,26 +56,25 @@ CapStone/
 └── README.md
 ```
 
----
 
-## 🧰 Installation
 
-### 1. Clone the repository
+🧰 Installation
+
+1. Clone the repository
 
 ```bash
 git clone <your-repo-url>
 cd CapStone
 ```
 
-### 2. Install dependencies
+2. Install dependencies
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
----
 
-## ▶️ Usage
+▶️ Usage
 
 Run the tool using:
 
@@ -83,15 +82,15 @@ Run the tool using:
 python -m src.main --input data/auth_logs.json --config data/config.json --output output/alert_report.json
 ```
 
-### CLI Arguments
+CLI Arguments
 
 * `--input` → Path to input JSON file (required)
 * `--config` → Path to configuration file (required)
 * `--output` → Path to output JSON file (required)
 
----
 
-## 📥 Input Format (auth_logs.json)
+
+📥 Input Format (auth_logs.json)
 
 ```json
 {
@@ -106,9 +105,9 @@ python -m src.main --input data/auth_logs.json --config data/config.json --outpu
 }
 ```
 
----
 
-## 📤 Output Format (alert_report.json)
+
+📤 Output Format (alert_report.json)
 
 ```json
 {
@@ -124,9 +123,9 @@ python -m src.main --input data/auth_logs.json --config data/config.json --outpu
 }
 ```
 
----
 
-## 🧪 Running Tests
+
+🧪 Running Tests
 
 Run the test suite with:
 
@@ -140,9 +139,9 @@ Tests include:
 * Anomalous login detection
 * Suspicious IP detection
 
----
 
-## 🛡️ Error Handling & Logging
+
+🛡️ Error Handling & Logging
 
 The application includes:
 
@@ -151,9 +150,9 @@ The application includes:
 * Skipping malformed events
 * Logging using Python’s `logging` module
 
----
 
-## ⚙️ Configuration (config.json)
+
+⚙️ Configuration (config.json)
 
 ```json
 {
@@ -164,7 +163,7 @@ The application includes:
 
 ---
 
-## 🎯 Key Concepts Demonstrated
+🎯 Key Concepts Demonstrated
 
 * JSON parsing and validation
 * Object-Oriented Programming (OOP)
@@ -173,14 +172,14 @@ The application includes:
 * Unit testing with pytest
 * Basic cybersecurity threat detection logic
 
----
 
-## 👤 Author
+
+👤 Author
 
 Vincent Gatlin
 
----
 
-## 📌 Notes
+
+📌 Notes
 
 This project was developed as part of the CVNP2646 Cybersecurity Programming course capstone and is intended as a portfolio project demonstrating practical security automation skills.
