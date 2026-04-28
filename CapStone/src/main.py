@@ -1,8 +1,8 @@
 import json
 import argparse
 import logging
-from models import SecurityEvent
-from analyzer import LogAnalyzer
+from src.models import SecurityEvent
+from src.analyzer import LogAnalyzer
 
 logging.basicConfig(
     level=logging.INFO,

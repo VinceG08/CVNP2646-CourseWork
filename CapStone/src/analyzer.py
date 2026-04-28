@@ -1,5 +1,5 @@
 from collections import defaultdict
-from models import Alert
+from src.models import Alert
 import logging
 
 logger = logging.getLogger(__name__)
