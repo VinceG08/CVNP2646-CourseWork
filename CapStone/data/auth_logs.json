@@ -7,6 +7,18 @@
       "event_type": "login_success"
     },
     {
+      "timestamp": "2024-03-10T10:00:00Z",
+      "username": "admin",
+      "source_ip": "10.0.0.1",
+      "event_type": "login_success"
+    },
+    {
+      "timestamp": "2024-03-10T10:30:00Z",
+      "username": "admin",
+      "source_ip": "192.168.1.10",
+      "event_type": "login_success"
+    },
+    {
       "timestamp": "2024-03-10T14:20:00Z",
       "username": "admin",
       "source_ip": "192.168.1.10",
