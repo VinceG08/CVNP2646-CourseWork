@@ -34,7 +34,8 @@ def test_bad_ip():
         SecurityEvent("2024-01-01T10:00:00Z","user","185.220.101.45","login_success")
     ]
 
-    analyzer = LogAnalyzer(events, {})
+    config = {"bad_ips": ["185.220.101.45"]}
+    analyzer = LogAnalyzer(events, config)
     alerts = analyzer.run()
 
     assert any(a.alert_type == "suspicious_ip" for a in alerts)

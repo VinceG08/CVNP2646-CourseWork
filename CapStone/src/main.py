@@ -16,10 +16,10 @@ def load_config(filepath):
             return json.load(f)
     except FileNotFoundError:
         logging.error("Config file not found")
-        return {}
     except json.JSONDecodeError:
         logging.error("Invalid config JSON")
-        return {}
+
+    return {}
 
 
 def load_events(filepath):
@@ -31,6 +31,7 @@ def load_events(filepath):
             raise ValueError("Missing 'events' key")
 
         events = []
+
         for e in data["events"]:
             try:
                 events.append(SecurityEvent(
@@ -46,13 +47,12 @@ def load_events(filepath):
 
     except FileNotFoundError:
         logging.error("Input file not found")
-        return []
     except json.JSONDecodeError:
         logging.error("Invalid JSON format")
-        return []
     except Exception as e:
         logging.error(f"Error loading events: {e}")
-        return []
+
+    return []
 
 
 def save_output(alerts, output_path):
@@ -61,20 +61,26 @@ def save_output(alerts, output_path):
     try:
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=4)
+        logging.info(f"Saved {len(alerts)} alerts to {output_path}")
     except Exception as e:
         logging.error(f"Error saving output: {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Auth Log Analyzer")
-    parser.add_argument("--input", required=True)
-    parser.add_argument("--config", required=True)
-    parser.add_argument("--output", required=True)
+
+    parser.add_argument("--input", required=True, help="Path to input JSON file")
+    parser.add_argument("--config", required=True, help="Path to config file")
+    parser.add_argument("--output", required=True, help="Path to output JSON file")
 
     args = parser.parse_args()
 
     events = load_events(args.input)
     config = load_config(args.config)
+
+    if not events:
+        logging.warning("No valid events to process")
+        return
 
     analyzer = LogAnalyzer(events, config)
     alerts = analyzer.run()
