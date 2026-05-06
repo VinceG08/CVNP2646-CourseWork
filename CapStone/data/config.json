@@ -1,5 +1,6 @@
 {
   "failed_login_threshold": 2,
   "risk_score": 90,
-  "bad_ips": ["185.220.101.45"]
+  "bad_ips": ["185.220.101.45"],
+  "impossible_travel_window_minutes": 60
 }

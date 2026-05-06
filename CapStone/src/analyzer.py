@@ -33,7 +33,6 @@ class LogAnalyzer:
             attempts[key].append(event)
 
         for (user, ip), events in attempts.items():
-            # 🔥 FIX: Sort events chronologically
             events.sort(key=lambda x: x.timestamp)
 
             failed_count = 0
@@ -55,7 +54,6 @@ class LogAnalyzer:
                         )
                         self._add_alert(alert)
 
-                    # reset counter after success
                     failed_count = 0
 
     def detect_anomalous_logins(self):
@@ -65,7 +63,6 @@ class LogAnalyzer:
             except Exception:
                 continue
 
-            # 🔥 FIX: Only flag successful logins
             if event.event_type == "login_success" and 0 <= hour <= 5:
                 logger.info(f"Anomalous login detected for {event.username}")
 
@@ -92,14 +89,56 @@ class LogAnalyzer:
                 )
                 self._add_alert(alert)
 
+    def detect_impossible_travel(self):
+        from datetime import datetime
+
+        user_logins = defaultdict(list)
+
+        for event in self.events:
+            if event.event_type == "login_success":
+                user_logins[event.username].append(event)
+
+        time_window = self.config.get("impossible_travel_window_minutes", 60)
+
+        for user, events in user_logins.items():
+            events.sort(key=lambda x: x.timestamp)
+
+            for i in range(len(events) - 1):
+                e1 = events[i]
+                e2 = events[i + 1]
+
+                try:
+                    t1 = datetime.fromisoformat(e1.timestamp.replace("Z", ""))
+                    t2 = datetime.fromisoformat(e2.timestamp.replace("Z", ""))
+                except Exception:
+                    continue
+
+                delta_minutes = (t2 - t1).total_seconds() / 60
+
+                if delta_minutes <= time_window:
+                    net1 = ".".join(e1.source_ip.split(".")[:2])
+                    net2 = ".".join(e2.source_ip.split(".")[:2])
+
+                    if net1 != net2:
+                        logger.warning(f"Impossible travel detected for {user}")
+
+                        alert = Alert(
+                            "impossible_travel",
+                            user,
+                            f"{e1.source_ip} → {e2.source_ip}",
+                            95,
+                            f"Logins from different networks within {int(delta_minutes)} minutes"
+                        )
+                        self._add_alert(alert)
+
     def run(self):
         logger.info(f"Analyzing {len(self.events)} events")
 
-        # Optional: global sort for consistency
         self.events.sort(key=lambda x: x.timestamp)
 
         self.detect_brute_force()
         self.detect_anomalous_logins()
         self.detect_suspicious_ip()
+        self.detect_impossible_travel()
 
         return self.alerts

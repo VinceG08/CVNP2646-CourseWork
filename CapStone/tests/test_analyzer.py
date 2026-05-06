@@ -35,7 +35,22 @@ def test_bad_ip():
     ]
 
     config = {"bad_ips": ["185.220.101.45"]}
+
     analyzer = LogAnalyzer(events, config)
     alerts = analyzer.run()
 
     assert any(a.alert_type == "suspicious_ip" for a in alerts)
+
+
+def test_impossible_travel():
+    events = [
+        SecurityEvent("2024-01-01T10:00:00Z", "user", "10.0.0.1", "login_success"),
+        SecurityEvent("2024-01-01T10:30:00Z", "user", "192.168.1.1", "login_success"),
+    ]
+
+    config = {"impossible_travel_window_minutes": 60}
+
+    analyzer = LogAnalyzer(events, config)
+    alerts = analyzer.run()
+
+    assert any(a.alert_type == "impossible_travel" for a in alerts)
