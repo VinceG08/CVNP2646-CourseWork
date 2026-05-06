@@ -183,3 +183,4 @@ Vincent Gatlin
 📌 Notes
 
 This project was developed as part of the CVNP2646 Cybersecurity Programming course capstone and is intended as a portfolio project demonstrating practical security automation skills.
+* Events are processed in chronological order to ensure accurate detection
